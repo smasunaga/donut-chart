@@ -25,8 +25,8 @@
 
 	<script>
 
-		var width = 960,
-    		height = 500,
+		var width = 400,
+    		height = 400,
     		radius = Math.min(width, height) / 2;
 
 		var color = d3.scale.ordinal()
@@ -54,17 +54,23 @@
 
 
   		var g = svg.selectAll(".arc")
-      		.data(pie(data))
+      	.data(pie(data))
     		.enter().append("g")
-      		.attr("class", "arc");
+      	.attr("class", "arc");
 
-      	var tip = d3.tip()
-                .attr('class', 'd3-tip')
-                .offset([498, 361])
-                .direction('n')
-                .html(function(d) {
-                    return '<h5>' + d.data.number + '</h5>';
-                });
+      var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([498, 361])
+        .direction('n')
+        .html(function(d) {
+            return return "<strong>Number of drugs in phase:</stronstyle='color:white'>" + d.data.number + "</span>";
+        });
+      // changing tooltip direction
+        tip.direction(function(d) {
+          if(d.data.name == 'Phase 1') return 'e'
+          if(d.data.name == 'Phase 2') return 'e'
+          if(d.data.name == 'Phase 3') return 's'
+        });
 
         svg.call(tip);
 
