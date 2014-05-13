@@ -4,28 +4,26 @@
 	<meta charset="utf-8">
 	<title>Clinical trials for Alzheimer's drugs</title>
 	<style type="text/css">
-		.d3-tip {
-            line-height: 1;
-            font-weight: normal;
-            opacity: .95;
-            padding: 2px 8px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            border-radius: 8px;
-            position 	: fixed;
-           }
+    .d3-tip {
+      line-height: 1;
+      font-family: Arial, serif;
+      font-weight: bold;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+    }
 
 	</style>
 </head>
 <body>
 	<script src="http://d3js.org/d3.v3.js"></script>
-	<script src="http://www.labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
+  <script>
 
-	<script>
-
-		var width = 960,
-    		height = 500,
+		var width = 400,
+    		height = 400,
     		radius = Math.min(width, height) / 2;
 
 		var color = d3.scale.ordinal()
@@ -51,35 +49,48 @@
     			d.number = +d.number;
   			});
 
+  	var g = svg.selectAll(".arc")
+      	.data(pie(data))
+    	  .enter().append("g")
+      	.attr("class", "arc");
+    
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .style('left', 600+ "px")
+        .style('top', 900 + "px")
+        .offset([0, 0])
+        .html(function(d) {
+          return "<strong>Number of drugs in phase:</strong><span style='color:white'>" + d.data.number + "</span>";
+      });
 
-  		var g = svg.selectAll(".arc")
-      		.data(pie(data))
-    		.enter().append("g")
-      		.attr("class", "arc");
+        // changing tooltip direction
+        tip.direction(function(d) {
+          if(d.data.name == 'Phase 1') return 'e'
+          if(d.data.name == 'Phase 2') return 'e'
+          if(d.data.name == 'Phase 3') return 's'
+        });
 
-      	var tip = d3.tip()
-                .attr('class', 'd3-tip')
-                .offset([498, 361])
-                .direction('n')
-                .html(function(d) {
-                    return '<h5>' + d.data.number + '</h5>';
-                });
 
-        svg.call(tip);
+      svg.call(tip);
+
 
   		g.append("path")
       		.attr("d", arc)
       		.style("fill", function(d) { return color(d.data.number); })
-      		.on('mouseover', tip.show)
-            .on('mouseout', tip.hide);;
+          .on('mouseover', tip.show)
+          .on('mouseout', tip.hide);
+          // .attr("data-legend", function(d) { return color(d.name); });
 
   		g.append("text")
       		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
       		.attr("dy", ".35em")
       		.style("text-anchor", "middle")
-      		.text(function(d) { return d.data.number && d.data.name; });
+      		.text(function(d) { return d.data.name; });
+    
+      
+      });
 
-		});
+		// });
 
 </script>
 </body>
